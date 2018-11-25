@@ -23,9 +23,9 @@ top.png: top.dot
 
 top.asc: top.blif pins.pcf
 	# iceblink40
-	arachne-pnr -d 1k -P vq100 -p pins.pcf top.blif -o top.asc
+	# arachne-pnr -d 1k -P vq100 -p pins.pcf top.blif -o top.asc
 	# tinyfpga bx
-	# arachne-pnr -d 8k -P cm81 -p pins.pcf top.blif -o top.asc
+	arachne-pnr -d 8k -P cm81 -p pins.pcf top.blif -o top.asc
 
 tb: shiftout_tb ledmatrix_tb top_tb
 	# top_syntb
@@ -56,5 +56,5 @@ top.bin: top.asc
 	icepack top.asc top.bin
 
 prog: tb top.bin
-	sudo iCEburn -ew top.bin
-	# sudo tinyprog -p top.bin
+	# sudo iCEburn -ew top.bin
+	sudo tinyprog -p top.bin

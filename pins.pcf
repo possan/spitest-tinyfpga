@@ -114,27 +114,29 @@
 # see https://github.com/tinyfpga/TinyFPGA-BX/blob/master/icestorm_template/pins.pcf
 
 # set_io LED2 59
-#set_io LED2 A2
-#set_io LED3 A1
-#set_io LED4 B3
-#set_io LED5 B1
-#set_io LEDDATA C2
-#set_io LEDLATCH C1
-#set_io LEDCLK D1
-#set_io CLK B2
+set_io LED2 A2
+set_io LED3 A1
+set_io LED4 B3
+set_io LED5 B1
+set_io LEDDATA A8
+set_io LEDLATCH B8
+set_io LEDCLK A9
+set_io CLK B2
+set_io DEB1 D2
+set_io DEB2 E1
+set_io DEB3 E2
 
 # iceblink40
 # See https://lh3.googleusercontent.com/-9tPHfAjyY2c/WB4F9BqAsTI/AAAAAAAAAm4/2dOoJQ_-P70SF6dsICp8BJFR6dJ80TQqACLcB/s1600/iCEblink40_pinout.PNG 
 
-set_io --warn-no-port LED2 59
-set_io --warn-no-port LED3 56
-set_io --warn-no-port LED4 53
-set_io --warn-no-port LED5 51
-set_io --warn-no-port LEDDATA 68
-set_io --warn-no-port LEDLATCH 71
-set_io --warn-no-port LEDCLK 78
-set_io --warn-no-port CLK 13
-
-set_io --warn-no-port DEB1 90
-set_io --warn-no-port DEB2 93
-set_io --warn-no-port DEB3 95
+#set_io --warn-no-port LED2 59
+#set_io --warn-no-port LED3 56
+#set_io --warn-no-port LED4 53
+#set_io --warn-no-port LED5 51
+#set_io --warn-no-port LEDDATA 68
+#set_io --warn-no-port LEDLATCH 71
+#set_io --warn-no-port LEDCLK 78
+#set_io --warn-no-port CLK 13
+#set_io --warn-no-port DEB1 90
+#set_io --warn-no-port DEB2 93
+#set_io --warn-no-port DEB3 95
