@@ -5,8 +5,7 @@ module shiftout (
     output wire clk_out,
     output wire data_out,
     output wire latch_out,
-    output wire done_out,
-    output wire debug_out
+    output wire done_out
 );
     localparam WAITING_FOR_RESET=0, RESETTING=1, WRITING=2, STOPPED=3;
 
@@ -15,24 +14,19 @@ module shiftout (
     reg [6:0] r_counter = 0;
     reg [0:15] r_queue = 0;
     reg r_latch_out = 1;
-    // reg r_do_reset = 0;
     reg r_done_out;
     reg r_clk_out;
-    reg r_debug;
     reg r_data_out;
-    reg [15:0] r_dummy = 0;
 
     assign data_out = r_data_out;
     assign latch_out = r_latch_out;
     assign clk_out = r_clk_out;
     assign done_out = r_done_out;
-    assign debug_out = r_debug;
 
     initial begin
         r_data_out <= 0;
         r_done_out <= 0;
         r_clk_out <= 0;
-        r_debug <= 0;
     end
 
     always @(posedge clk_in) begin
@@ -53,15 +47,12 @@ module shiftout (
                     end
 
                     RESETTING: begin
-                        r_done_out <= 0;
                         r_nextstate <= WRITING;
                         r_data_out <= r_queue[r_counter];
                     end
 
                     WRITING: begin
                         if (r_counter < 16) begin
-                            // r_data_out <= r_queue[r_counter];
-                            r_done_out <= 0;
                             r_clk_out <= 1;
                         end else begin
                             r_data_out <= 0;
@@ -72,11 +63,7 @@ module shiftout (
 
                     STOPPED: begin
                         r_done_out <= 1;
-                        // if (r_latch_out == 1) begin;
-                        //     r_done_out <= 0;
                         r_nextstate <= WAITING_FOR_RESET;
-                        // end
-                        // r_n
                     end
                 endcase
             end else begin

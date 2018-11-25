@@ -24,10 +24,10 @@ module top_tb;
     top #(
         .clk_divider(0)
     ) c1 (
-        clk,
-        led2, led3, led4, led5,
-        leddata, ledlatch, ledclk,
-        debug1, debug2, debug3
+        .CLK(clk),
+        .LEDDATA(leddata),
+        .LEDLATCH(ledlatch),
+        .LEDCLK(ledclk)
     );
 
 endmodule

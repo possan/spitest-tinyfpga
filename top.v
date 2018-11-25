@@ -1,19 +1,10 @@
-// look in pins.pcf for all the pin names on the TinyFPGA BX board
-
 module top #(
     parameter clk_divider = 100
 ) (
     input CLK,
-    output wire LED2,
-    output wire LED3,
-    output wire LED4,
-    output wire LED5,
     output wire LEDDATA,
     output wire LEDLATCH,
-    output wire LEDCLK,
-    output wire DEB1,
-    output wire DEB2,
-    output wire DEB3
+    output wire LEDCLK
 );
     localparam
         IDLE=0,
@@ -21,22 +12,21 @@ module top #(
         RESETTED=4,
         STOPPED=5;
 
+    localparam INIT1 = 16'b00001100_00000001; // set shutdown mode (12) to 1 (not shut down)
+    localparam INIT2 = 16'b00001111_00000001; // send displaytest to 1
+    localparam INIT3 = 16'b00001111_00000000; // set displaytest to 0
+    localparam INIT4 = 16'b00001001_00000000; // set decodemode (9) to 0
+    localparam INIT5 = 16'b00001011_00000111; // reset #2: set scanlimit (11) to 7
 
-    localparam INIT1 = 16'b0000110000000001; // set shutdown mode (12) to 1 (not shut down)
-    localparam INIT2 = 16'b0000111100000001; // send displaytest to 1
-    localparam INIT3 = 16'b0000111100000000; // set displaytest to 0
-    localparam INIT4 = 16'b0000100100000000; // set decodemode (9) to 0
-    localparam INIT5 = 16'b0000101100000111; // reset #2: set scanlimit (11) to 7
-
-    //                            1...4...
-    localparam GFX1 = 16'b0000000100111100;
-    localparam GFX2 = 16'b0000001001111110;
-    localparam GFX3 = 16'b0000001110011001;
-    localparam GFX4 = 16'b0000010011111111;
-    localparam GFX5 = 16'b0000010111111111;
-    localparam GFX6 = 16'b0000011011000011;
-    localparam GFX7 = 16'b0000011101100110;
-    localparam GFX8 = 16'b0000100000111100;
+    //                             1...4...
+    localparam GFX1 = 16'b00000001_00111100;
+    localparam GFX2 = 16'b00000010_01111110;
+    localparam GFX3 = 16'b00000011_10011001;
+    localparam GFX4 = 16'b00000100_11111111;
+    localparam GFX5 = 16'b00000101_11111111;
+    localparam GFX6 = 16'b00000110_11000011;
+    localparam GFX7 = 16'b00000111_01100110;
+    localparam GFX8 = 16'b00001000_00111100;
 
     reg [5:0] r_state;
     reg [5:0] r_nextstate;
@@ -45,33 +35,20 @@ module top #(
     reg r_clk;
     reg r_reset;
     reg [4:0] r_setup;
-    // reg [63:0] r_pixels;
     reg [15:0] r_shiftdata;
-    // reg r_init = 0;
 
     wire w_done;
-    wire w_debug;
     reg [15:0] r_dummy_reset;
-    reg w_debug2 = 0;
     wire w_clk_out;
     wire w_data_out;
     wire w_latch_out;
     reg w_last_done;
 
-    assign LED2 = r_clk;
-    assign LED3 = w_clk_out;
-    assign LED4 = w_data_out;
-    assign LED5 = w_latch_out;
-
     assign LEDDATA = w_data_out;
     assign LEDLATCH = w_latch_out;
     assign LEDCLK = w_clk_out;
 
-    assign DEB1 = w_data_out;
-    assign DEB2 = w_done;
-    assign DEB3 = r_reset;
-
-    // ledmatrix ledmatriximport(r_clk, r_reset, r_pixels, w_clk_out, w_data_out, w_latch_out, w_done, w_debug);
+    // ledmatrix ledmatriximport(r_clk, r_reset, r_pixels, w_clk_out, w_data_out, w_latch_out, w_done);
     shiftout s(
         .reset_in(r_reset),
         .clk_in(r_clk),
@@ -79,8 +56,7 @@ module top #(
         .clk_out(w_clk_out),
         .data_out(w_data_out),
         .latch_out(w_latch_out),
-        .done_out(w_done),
-        .debug_out(w_debug));
+        .done_out(w_done));
 
     initial begin
         r_clk <= 0;
@@ -98,7 +74,7 @@ module top #(
             r_counter <= 0;
 
             r_dummy_reset <= r_dummy_reset + 1;
-            if (r_dummy_reset >= 6000) begin
+            if (r_dummy_reset >= 16000) begin
                 r_dummy_reset <= 0;
                 r_clk <= 0;
                 r_setup <= 0;
@@ -106,16 +82,12 @@ module top #(
             end else begin
                 if (w_done == 1 && !w_last_done) begin
                     $display("in w_done = 1");
-                    // r_reset <= 1;
                     r_nextstate <= IDLE;
                     r_setup <= r_setup + 1;
-                    // r_debug2 <= 0;
                 end
                 case (r_state)
                     IDLE: begin
-                        // reset #1: send displaytest = 0
                         $display("TOP: resetting.");
-                        // r_pixels <= 64'b1111001100110101111100110011010111110011001101011111001100110101;
 
                         if (r_setup == 0) begin
                             r_shiftdata <= INIT1;

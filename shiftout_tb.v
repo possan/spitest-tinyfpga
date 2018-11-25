@@ -25,7 +25,6 @@ module shiftout_tb;
     wire [0:0] clkout;
     wire [0:0] dataout;
     wire [0:0] latchout;
-    wire [0:0] debug;
 
     always #1 clk = !clk;
 
@@ -36,7 +35,6 @@ module shiftout_tb;
         .clk_out(clkout),
         .data_out(dataout),
         .latch_out(latchout),
-        .done_out(done),
-        .debug_out(debug));
+        .done_out(done));
 
 endmodule
