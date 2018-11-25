@@ -34,12 +34,12 @@ shiftout_tb: shiftout.v shiftout_tb.v
 	iverilog -o shiftout_tb shiftout.v shiftout_tb.v
 	./shiftout_tb
 
-ledmatrix_tb: ledmatrix.v ledmatrix_tb.v shiftout.v
-	iverilog -o ledmatrix_tb ledmatrix.v ledmatrix_tb.v shiftout.v
+ledmatrix_tb: ledmatrix.v shiftout.v
+	iverilog -o ledmatrix_tb ledmatrix.v shiftout.v
 	./ledmatrix_tb
 
-top_tb: top.v top_tb.v ledmatrix.v shiftout.v
-	iverilog -o top_tb top_tb.v top.v ledmatrix.v shiftout.v
+top_tb: top.v top_tb.v shiftout.v
+	iverilog -o top_tb top_tb.v top.v shiftout.v
 	./top_tb
 
 # top_syn.v: top.blif
